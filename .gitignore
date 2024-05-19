@@ -1,2 +1,6 @@
-debug.*
 node_modules
+dist
+
+.env
+
+debug.*
