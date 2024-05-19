@@ -20,6 +20,15 @@ export class BusinessFault extends Error {
 }
 
 export class ValidationFault extends Error {
+  messages: string[];
+
+  constructor(...messages: string[]) {
+    super(messages.join(', '));
+    this.messages = messages;
+  }
+}
+
+export class MissingResourceFault extends Error {
   constructor(message: string) {
     super(message);
   }
@@ -37,7 +46,9 @@ export function handleErrors(
     success: false,
     error: {
       type: 'InternalError',
-      message: 'An unexpected error occurred, check logs for more information',
+      messages: [
+        'An unexpected error occurred, check logs for more information',
+      ],
     },
   };
 
@@ -45,7 +56,7 @@ export function handleErrors(
     statusCode = 401;
     apiResponse.error = {
       type: AuthenticationFault.name,
-      message: error.message,
+      messages: [error.message],
     };
   }
 
@@ -53,7 +64,7 @@ export function handleErrors(
     statusCode = 403;
     apiResponse.error = {
       type: AuthorizationFault.name,
-      message: error.message,
+      messages: [error.message],
     };
   }
 
@@ -61,7 +72,7 @@ export function handleErrors(
     statusCode = 400;
     apiResponse.error = {
       type: ValidationFault.name,
-      message: error.message,
+      messages: error.messages,
     };
   }
 
@@ -69,11 +80,21 @@ export function handleErrors(
     statusCode = 400;
     apiResponse.error = {
       type: BusinessFault.name,
-      message: error.message,
+      messages: [error.message],
     };
   }
 
-  console.error(error);
+  if (error instanceof MissingResourceFault) {
+    statusCode = 404;
+    apiResponse.error = {
+      type: MissingResourceFault.name,
+      messages: [error.message],
+    };
+  }
+
+  if (statusCode === 500) {
+    console.error(error);
+  }
 
   return response.status(statusCode).json(apiResponse);
 }

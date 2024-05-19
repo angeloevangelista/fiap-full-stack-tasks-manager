@@ -6,5 +6,5 @@ export type ApiResponse<T> = {
 
 export type ApiError = {
   type: string;
-  message: string;
+  messages: string[];
 };
