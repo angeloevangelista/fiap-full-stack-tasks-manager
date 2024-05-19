@@ -5,6 +5,9 @@ import ip from 'ip';
 import express from 'express';
 
 import { appRouter } from './http';
+import { databaseSource } from './database';
+
+databaseSource.initialize();
 
 const app = express();
 const appPort = process.env.PORT || 3333;
