@@ -3,6 +3,7 @@ import 'reflect-metadata';
 import 'express-async-errors';
 
 import ip from 'ip';
+import cors from 'cors';
 import express from 'express';
 
 import { appRouter } from './http';
@@ -13,6 +14,7 @@ databaseSource.initialize();
 const app = express();
 const appPort = process.env.PORT || 3333;
 
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 app.use(appRouter);
 
