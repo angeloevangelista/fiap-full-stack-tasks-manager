@@ -15,21 +15,25 @@ import * as SC from './styles';
 import { RectButton } from 'react-native-gesture-handler';
 
 export default function TasksScreen() {
+  const theme = useTheme();
+  const navigation = useNavigation();
+
   const bottomSheetRef = useRef<BottomSheet>(null);
+
   const [isCreating, setIsCreating] = useState(false);
-  const [filter, setFilter] = useState<'all' | 'today' | 'week'>('all');
   const [selectedTask, setSelectedTask] = useState<Task>();
+  const [filter, setFilter] = useState<'all' | 'today' | 'week'>('all');
 
   const tasksManagerApi = useMemo(() => new TasksManagerApi(), []);
 
-  const {
-    data: tasks,
-    isLoading: isListingTasks,
-    refetch: reloadTasks,
-  } = useQuery({
+  const { data: tasks, refetch: reloadTasks } = useQuery({
     queryKey: ['listTasks'],
     queryFn: () => tasksManagerApi.listTasks(),
   });
+
+  useEffect(() => {
+    navigation.setOptions({ headerShown: false });
+  }, [navigation]);
 
   const filteredTasks = useMemo(() => {
     let filterFunction: (_: Task) => boolean;
@@ -99,13 +103,6 @@ export default function TasksScreen() {
     },
     [tasks],
   );
-
-  const theme = useTheme();
-  const navigation = useNavigation();
-
-  useEffect(() => {
-    navigation.setOptions({ headerShown: false });
-  }, [navigation]);
 
   return (
     <SC.Container>
