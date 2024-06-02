@@ -1,0 +1,6 @@
+{
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "package.json": "yarn.lock, .env*, tsconfig*.json, app.json, expo-env.d.ts, babel.config.js, .prettierrc"
+  }
+}
